@@ -9,7 +9,7 @@ fn main() {
 
     let sum = v1.add(&v2);
     let sub = v2.sub(&v1);
-    let scalmar = v1.scal_mul(&scalar);
+    let scalmar = v1.mag(&scalar);
 
 
     println!("Pierwszy wektor: {}", v1);
