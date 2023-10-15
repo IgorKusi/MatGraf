@@ -13,7 +13,7 @@ fn main() {
 
     let v3_7 = v3_5.cross(&v3_6);
 
-    println!("v1 +v2: {} \nv2 + v1: {} \n", v3_1.add(&v3_2), v3_2.add(&v3_1));
+    println!("v1 +v2: {} \nv2 + v1: {}", v3_1.add(&v3_2), v3_2.add(&v3_1));
     println!("kąt pomiędzy [0,3,0], a [5,5,0]: {}[rad]", v3_3.angle(&v3_4));
     println!("wektor prostopadły do [4,5,1] i [4,1,3]: {}", v3_5.cross(&v3_6));
     println!("znormalozowany wektor: {}", v3_7.normalise());

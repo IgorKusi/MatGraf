@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[allow(dead_code)]
 pub struct Vector3 {
     x: f64,
     y: f64,

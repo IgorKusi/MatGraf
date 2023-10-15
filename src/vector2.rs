@@ -4,6 +4,7 @@ use vector3::Vector3;
 use crate::vector3;
 
 //TAK JAKBY class Vector2
+#[allow(dead_code)]
 pub struct Vector2 {
     x: f64,
     y: f64,
