@@ -40,6 +40,8 @@ impl Matrix4 {
         return ret;
     }
 
+    // pub fn
+
     pub fn det(&self) -> f64 {
         let mut determinant = 0.0;
         for i in 0..4 {
@@ -185,7 +187,7 @@ impl Matrix4 {
             }
         }
         for i in 0..3 {
-            ret[i][3] = vec[i];
+            ret[i][3] += vec[i];
         }
         return ret;
     }
