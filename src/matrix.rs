@@ -1,11 +1,9 @@
-use std::convert::identity;
 use std::ops::*;
-use nalgebra::ArrayStorage;
 use crate::vector3::Vector3;
 
 use crate::vector4::Vector4;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Matrix4 {
     pub entries: [[f64; 4]; 4],
 }
@@ -40,7 +38,41 @@ impl Matrix4 {
         return ret;
     }
 
-    // pub fn
+    pub fn rot_x(alpha_rad: f64) -> Matrix4 {
+        let mut ret = Self::identity();
+        let cos = f64::cos(alpha_rad);
+        let sin = f64::sin(alpha_rad);
+        ret[1][1] = cos;
+        ret[1][2] = -sin;
+        ret[2][1] = sin;
+        ret[2][2] = cos;
+
+        return ret;
+    }
+
+    pub fn rot_y(alpha_rad: f64) -> Matrix4 {
+        let mut ret = Self::identity();
+        let cos = f64::cos(alpha_rad);
+        let sin = f64::sin(alpha_rad);
+        ret[0][0] = cos;
+        ret[0][2] = sin;
+        ret[2][0] = -sin;
+        ret[2][2] = cos;
+
+        return ret;
+    }
+
+    pub fn rot_z(alpha_rad: f64) -> Matrix4 {
+        let mut ret = Self::identity();
+        let cos = f64::cos(alpha_rad);
+        let sin = f64::sin(alpha_rad);
+        ret[0][0] = cos;
+        ret[0][1] = -sin;
+        ret[1][0] = sin;
+        ret[1][1] = cos;
+
+        return ret;
+    }
 
     pub fn det(&self) -> f64 {
         let mut determinant = 0.0;
@@ -56,11 +88,11 @@ impl Matrix4 {
     }
 
 
-    pub fn col_as_vec4(&self, x: i8) -> Vector4 {
+    pub fn col_as_vec4(&self, x: usize) -> Vector4 {
         Vector4::new(self[0][x], self[1][x], self[2][x], self[3][x])
     }
 
-    pub fn row_as_vec4(&self, y: i8) -> Vector4 {
+    pub fn row_as_vec4(&self, y: usize) -> Vector4 {
         Vector4::new(self[y][0], self[y][1], self[y][2], self[y][3])
     }
 
@@ -102,7 +134,7 @@ impl Matrix4 {
         }
     }
 
-    pub fn mul_sclr(&self, scalar: &f64) -> Matrix4 {
+    pub fn mul_sclr(&self, scalar: f64) -> Matrix4 {
         let mut arr = [[0f64; 4]; 4];
         for y in 0..4 {
             for x in 0..4 {
@@ -113,7 +145,7 @@ impl Matrix4 {
         return Matrix4 { entries: arr };
     }
 
-    pub fn mut_mul_sclr(&mut self, scalar: &f64) {
+    pub fn mut_mul_sclr(&mut self, scalar: f64) {
         for y in 0..4 {
             for x in 0..4 {
                 self[y][x] *= scalar;
@@ -125,7 +157,7 @@ impl Matrix4 {
         let mut arr = [[0f64; 4]; 4];
         for y in 0..4 {
             for x in 0..4 {
-                arr[y][x] = self.row_as_vec4(y as i8).dot_product(&other.col_as_vec4(x as i8));
+                arr[y][x] = self.row_as_vec4(y).dot_product(&other.col_as_vec4(x));
             }
         }
 
@@ -133,7 +165,7 @@ impl Matrix4 {
     }
 
     pub fn mut_mul(&mut self, other: &Matrix4) {
-        let mut res = self.mul(&other);
+        let mut res = self.mul(other);
 
         //??????
         // self = &mut res;
@@ -142,6 +174,17 @@ impl Matrix4 {
                 self[y][x] = res[y][x];
             }
         }
+    }
+
+    pub fn mul_vec(&self, vec: &Vector4) -> Vector4 {
+        let mut ret = Vector4::new(0f64, 0f64, 0f64, 0f64);
+
+        for y in 0..4 {
+            for x in 0..4 {
+                ret[y] += self[y][x] * vec[x];
+            }
+        }
+        return ret;
     }
 
     pub fn transpose(&self) -> Matrix4 {
@@ -167,7 +210,7 @@ impl Matrix4 {
     }
 
     pub fn invert(&self) -> Matrix4 {
-        self.transpose().mul_sclr(1 / self.det())
+        self.transpose().mul_sclr(1f64 / self.det())
     }
 
     pub fn mut_invert(&mut self) {
@@ -179,70 +222,31 @@ impl Matrix4 {
         }
     }
 
-    pub fn trans(&self, vec: Vector3) -> Matrix4 {
-        let mut ret: Matrix4 = Self::identity();
-        for y in 0..4 {
-            for x in 0..4 {
-                ret[y][x] = self[y][x];
-            }
-        }
-        for i in 0..3 {
-            ret[i][3] += vec[i];
-        }
-        return ret;
-    }
-
-    pub fn mut_trans(&mut self, vec: Vector3) {
-        for i in 0..3 {
-            self[i][3] = vec[i];
-        }
-    }
-
-    pub fn _scale(&self, vec: Vector3) -> Matrix4 {
-        let mut ret: Matrix4 = Self::identity();
-        for y in 0..4 {
-            for x in 0..4 {
-                ret[y][x] = self[y][x];
-            }
-        }
-        for i in 0..3 {
-            ret[i][i] *= vec[i];
-        }
-        return ret;
-    }
-
-    pub fn _mut_scale(&mut self, vec: Vector3) {
-        for i in 0..3 {
-            self[i][i] *= vec[i];
-        }
-    }
-
-
 }
 
-impl Add<Matrix4> for Matrix4 {
+impl Add<&Matrix4> for Matrix4 {
     type Output = Matrix4;
 
-    fn add(&self, rhs: &Matrix4) -> Self::Output {
+    fn add(self, rhs: &Matrix4) -> Self::Output {
         self.add(&rhs)
     }
 }
 
-impl AddAssign<Matrix4> for Matrix4 {
+impl AddAssign<&Matrix4> for Matrix4 {
     fn add_assign(&mut self, rhs: &Matrix4) {
         self.mut_add(&rhs)
     }
 }
 
-impl Sub<Matrix4> for Matrix4 {
+impl Sub<&Matrix4> for Matrix4 {
     type Output = Matrix4;
 
-    fn sub(&self, rhs: &Matrix4) -> Self::Output {
+    fn sub(self, rhs: &Matrix4) -> Self::Output {
         self.sub(&rhs)
     }
 }
 
-impl SubAssign<Matrix4> for Matrix4 {
+impl SubAssign<&Matrix4> for Matrix4 {
     fn sub_assign(&mut self, rhs: &Matrix4) {
         self.mut_sub(&rhs)
     }
@@ -251,26 +255,26 @@ impl SubAssign<Matrix4> for Matrix4 {
 impl Mul<f64> for Matrix4 {
     type Output = Matrix4;
 
-    fn mul(&self, rhs: &f64) -> Self::Output {
-        self.mul_sclr(&rhs)
+    fn mul(self, rhs: f64) -> Self::Output {
+        self.mul_sclr(rhs)
     }
 }
 
 impl MulAssign<f64> for Matrix4 {
-    fn mul_assign(&mut self, rhs: &f64) {
-        self.mut_mul_sclr(&rhs)
+    fn mul_assign(&mut self, rhs: f64) {
+        self.mut_mul_sclr(rhs)
     }
 }
 
-impl Mul<Matrix4> for Matrix4 {
+impl Mul<&Matrix4> for Matrix4 {
     type Output = Matrix4;
 
-    fn mul(&self, rhs: &Matrix4) -> Self::Output {
-        self.mul(&rhs)
+    fn mul(self, rhs: &Matrix4) -> Self::Output {
+        self.mul(rhs)
     }
 }
 
-impl MulAssign<Matrix4> for Matrix4 {
+impl MulAssign<&Matrix4> for Matrix4 {
     fn mul_assign(&mut self, rhs: &Matrix4) {
         self.mut_mul(&rhs)
     }
@@ -281,5 +285,17 @@ impl Neg for Matrix4 {
 
     fn neg(self) -> Self::Output {
         self.invert()
+    }
+}impl Index<usize> for Matrix4 {
+    type Output = [f64; 4];
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.entries[index]
+    }
+}
+
+impl IndexMut<usize> for Matrix4 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.entries[index]
     }
 }

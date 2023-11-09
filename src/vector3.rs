@@ -1,4 +1,5 @@
 use std::fmt;
+use std::ops::Index;
 
 pub struct Vector3 {
     pub x: f64,
@@ -93,5 +94,17 @@ impl Vector3 {
 impl fmt::Display for Vector3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{},{},{}]", self.x, self.y, self.z)
+    }
+}
+impl Index<usize> for Vector3 {
+    type Output = f64;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("Index out of bounds for Vector3"),
+        }
     }
 }

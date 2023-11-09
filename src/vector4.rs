@@ -1,5 +1,9 @@
 use std::fmt;
+use std::ops::Index;
+use std::ops::IndexMut;
 
+#[derive(Debug)]
+#[allow(dead_code)]
 pub struct Vector4 {
     pub x: f64,
     pub y: f64,
@@ -92,5 +96,29 @@ impl Vector4 {
 impl fmt::Display for Vector4 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{},{},{},{}]", self.x, self.y, self.z, self.w)
+    }
+}
+impl Index<usize> for Vector4 {
+    type Output = f64;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            3 => &self.w,
+            _ => panic!("Index out of bounds for Vector4"),
+        }
+    }
+}
+impl IndexMut<usize> for Vector4 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            3 => &mut self.w,
+            _ => panic!("Index out of bounds for Vector4"),
+        }
     }
 }
