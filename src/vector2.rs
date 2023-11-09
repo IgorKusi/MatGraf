@@ -4,8 +4,8 @@ use vector3::Vector3;
 use crate::vector3;
 
 pub struct Vector2 {
-    x: f64,
-    y: f64,
+    pub x: f64,
+    pub y: f64,
 }
 
 impl Vector2 {

@@ -1,6 +1,8 @@
 mod vector2;
 mod vector3;
 mod matrix4x4;
+mod matrix;
+mod vector4;
 
 use crate::vector3::Vector3;
 use std::fs::File;
