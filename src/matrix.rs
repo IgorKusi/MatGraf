@@ -278,6 +278,14 @@ impl MulAssign<&Matrix4> for Matrix4 {
     }
 }
 
+impl Mul<&Vector4> for Matrix4 {
+    type Output = Vector4;
+
+    fn mul(self, rhs: &Vector4) -> Self::Output {
+        self.mul_vec(&rhs)
+    }
+}
+
 impl Neg for Matrix4 {
     type Output = Matrix4;
 
