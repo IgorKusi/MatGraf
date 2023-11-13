@@ -96,7 +96,7 @@ impl Matrix4 {
         Vector4::new(self[y][0], self[y][1], self[y][2], self[y][3])
     }
 
-    pub fn add(&self, other: &Matrix4) -> Matrix4 {
+    pub fn add_mtrx(&self, other: &Matrix4) -> Matrix4 {
         let mut arr = [[0f64; 4]; 4];
         for y in 0..4 {
             for x in 0..4 {
@@ -107,7 +107,7 @@ impl Matrix4 {
         return Matrix4 { entries: arr };
     }
 
-    pub fn mut_add(&mut self, other: &Matrix4) {
+    pub fn mut_add_mtrx(&mut self, other: &Matrix4) {
         for y in 0..4 {
             for x in 0..4 {
                 self[y][x] += other[y][x];
@@ -115,7 +115,7 @@ impl Matrix4 {
         }
     }
 
-    pub fn sub(&self, other: &Matrix4) -> Matrix4 {
+    pub fn sub_mtrx(&self, other: &Matrix4) -> Matrix4 {
         let mut arr = [[0f64; 4]; 4];
         for y in 0..4 {
             for x in 0..4 {
@@ -126,7 +126,7 @@ impl Matrix4 {
         return Matrix4 { entries: arr };
     }
 
-    pub fn mut_sub(&mut self, other: &Matrix4) {
+    pub fn mut_sub_mtrx(&mut self, other: &Matrix4) {
         for y in 0..4 {
             for x in 0..4 {
                 self[y][x] -= other[y][x];
@@ -153,22 +153,20 @@ impl Matrix4 {
         }
     }
 
-    pub fn mul(&self, other: &Matrix4) -> Matrix4 {
-        let mut arr = [[0f64; 4]; 4];
+    pub fn mul_mtrx(&self, other: &Matrix4) -> Matrix4 {
+        let mut ret = Matrix4::identity();
         for y in 0..4 {
             for x in 0..4 {
-                arr[y][x] = self.row_as_vec4(y).dot_product(&other.col_as_vec4(x));
+                ret[y][x] = self.row_as_vec4(y).dot_product(&other.col_as_vec4(x));
             }
         }
 
-        return Matrix4 { entries: arr };
+        return ret;
     }
 
-    pub fn mut_mul(&mut self, other: &Matrix4) {
-        let mut res = self.mul(other);
+    pub fn mut_mul_mtrx(&mut self, other: &Matrix4) {
+        let mut res = self.mul_mtrx(other);
 
-        //??????
-        // self = &mut res;
         for y in 0..4 {
             for x in 0..4 {
                 self[y][x] = res[y][x];
@@ -228,13 +226,13 @@ impl Add<&Matrix4> for Matrix4 {
     type Output = Matrix4;
 
     fn add(self, rhs: &Matrix4) -> Self::Output {
-        self.add(&rhs)
+        self.add_mtrx(&rhs)
     }
 }
 
 impl AddAssign<&Matrix4> for Matrix4 {
     fn add_assign(&mut self, rhs: &Matrix4) {
-        self.mut_add(&rhs)
+        self.mut_add_mtrx(&rhs)
     }
 }
 
@@ -242,13 +240,13 @@ impl Sub<&Matrix4> for Matrix4 {
     type Output = Matrix4;
 
     fn sub(self, rhs: &Matrix4) -> Self::Output {
-        self.sub(&rhs)
+        self.sub_mtrx(&rhs)
     }
 }
 
 impl SubAssign<&Matrix4> for Matrix4 {
     fn sub_assign(&mut self, rhs: &Matrix4) {
-        self.mut_sub(&rhs)
+        self.mut_sub_mtrx(&rhs)
     }
 }
 
@@ -270,13 +268,13 @@ impl Mul<&Matrix4> for Matrix4 {
     type Output = Matrix4;
 
     fn mul(self, rhs: &Matrix4) -> Self::Output {
-        self.mul(rhs)
+        self.mul_mtrx(rhs)
     }
 }
 
 impl MulAssign<&Matrix4> for Matrix4 {
     fn mul_assign(&mut self, rhs: &Matrix4) {
-        self.mut_mul(&rhs)
+        self.mut_mul_mtrx(&rhs)
     }
 }
 
@@ -286,7 +284,9 @@ impl Neg for Matrix4 {
     fn neg(self) -> Self::Output {
         self.invert()
     }
-}impl Index<usize> for Matrix4 {
+}
+
+impl Index<usize> for Matrix4 {
     type Output = [f64; 4];
 
     fn index(&self, index: usize) -> &Self::Output {
