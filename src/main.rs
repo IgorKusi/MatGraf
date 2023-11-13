@@ -113,4 +113,6 @@ fn main() {
     println!("Negated Matrix (using '- operator'):\n{:?}", -(Matrix4::scale(&vector) + &Matrix4::translate(&vector)));
 
     println!("Rotated vector: \n{:?}", Matrix4::rot_y(std::f64::consts::FRAC_PI_4) * &Vector4::new(1.0, 0.0, 0.0, 1.0));
+    println!("Translate * scale: \n{:?}", Matrix4::translate(&vector) * &Matrix4::scale(&vector));
+    println!("Scale * translate: \n{:?}", Matrix4::scale(&vector) * &Matrix4::translate(&vector));
 }
