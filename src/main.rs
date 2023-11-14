@@ -5,8 +5,6 @@ mod vector4;
 
 use crate::vector3::Vector3;
 use crate::vector4::Vector4;
-use std::fs::File;
-use std::io::Write;
 use crate::matrix::Matrix4;
 
 
@@ -74,7 +72,7 @@ fn main() {
     // Test inversion
     println!("Inverted Scale + Translate Matrix:\n{:?}", (Matrix4::scale(&vector)+&Matrix4::translate(&vector)).invert());
 
-    let mut mut_inverted_matrix = (Matrix4::scale(&vector)+&Matrix4::translate(&vector));
+    let mut mut_inverted_matrix = Matrix4::scale(&vector) + &Matrix4::translate(&vector);
     mut_inverted_matrix.mut_invert();
     println!("In-Place Inverted Matrix:\n{:?}", mut_inverted_matrix);
 
@@ -88,7 +86,6 @@ fn main() {
     println!("In-Place Sum Matrix (using '+= operator'):\n{:?}", mut_sum_op_matrix);
 
     // Test subtraction using '-' operator
-    let diff_op_matrix = matrix - &Matrix4::scale(&vector);
     println!("Difference Matrix (using '- operator'):\n{:?}", matrix - &Matrix4::scale(&vector));
 
     let mut mut_diff_op_matrix = matrix;

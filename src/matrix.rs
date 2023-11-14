@@ -165,7 +165,7 @@ impl Matrix4 {
     }
 
     pub fn mut_mul_mtrx(&mut self, other: &Matrix4) {
-        let mut res = self.mul_mtrx(other);
+        let res = self.mul_mtrx(other);
 
         for y in 0..4 {
             for x in 0..4 {
@@ -212,7 +212,7 @@ impl Matrix4 {
     }
 
     pub fn mut_invert(&mut self) {
-        let mut res = self.invert();
+        let res = self.invert();
         for y in 0..4 {
             for x in 0..4 {
                 self[y][x] = res[y][x];
