@@ -8,6 +8,7 @@ mod quaterion;
 
 use std::fs::File;
 use std::io::{self, Write};
+use crate::vector3::Vector3;
 
 fn main() {
     // 1. Utwórz kwaterniony
@@ -22,9 +23,10 @@ fn main() {
     // 3. Obróć punkt [-1, -1, -1] o 270° wokół osi X
     let point = Quaternion::new(0.0, -1.0, -1.0, -1.0);
     let angle_degrees: f64 = 270.0;
-    let angle_radians = angle_degrees.to_radians();
-    let rotation_quaternion = Quaternion::new(f64::cos(angle_radians / 2.0), f64::sin(angle_radians / 2.0), 0.0, 0.0);
-    let rotated_point = rotation_quaternion * point;
+    let axis: Vector3 = Vector3::new(1.0, 0.0, 0.0);
+
+    //rotate point around axis x by 270 degrees
+    let rotated_point = Quaternion::rotate(point.v, angle_degrees, axis);
 
     // 4. Udowodnij brak przemienności mnożenia kwaternionów
     let product1 = quaternion1 * quaternion2;
