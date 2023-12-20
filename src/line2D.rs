@@ -48,7 +48,6 @@ impl Line2D{
 
         // Check if lines are parallel (denom is zero)
         if denom == 0.0 {
-            // Lines are parallel or coincident, no unique intersection point
             return None;
         }
 

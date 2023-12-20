@@ -59,7 +59,6 @@ impl Line3D{
 
         // Check if lines are parallel (denom is zero)
         if denom.length() == 0.0 {
-            // Lines are parallel or coincident, no unique intersection point
             return None;
         }
 
@@ -71,18 +70,18 @@ impl Line3D{
     pub fn does_intersect_with_plane(&self, plane: &Plane) -> bool {
         let v1 = &self.p2.sub(&self.p1);
         let v2 = &plane.p2.sub(&plane.p1);
-        let normal = plane.calculate_normal(); // Add a method in Plane to calculate the normal vector
+        let normal = plane.calculate_normal();
         let dot = v1.dot(&normal);
         return dot != 0.0;
     }
 
     pub fn calculate_point_of_intersection_with_plane(&self, plane: &Plane) -> Option<Vector3> {
         let v1 = &self.p2.sub(&self.p1);
-        let normal = plane.calculate_normal(); // Add a method in Plane to calculate the normal vector
+        let normal = plane.calculate_normal();
         let dot = v1.dot(&normal);
 
         if dot == 0.0 {
-            // The line is parallel to the plane
+
             return None;
         }
 
@@ -107,26 +106,35 @@ impl Line3D{
 
     pub fn calculate_point_of_intersection_with_sphere(&self, sphere: &Sphere) -> Option<Vector3> {
         let v1 = &self.p2.sub(&self.p1);
-        let dir = v1.normalise()?; // Use normalize to ensure the direction vector is normalized
-        let dist = sphere.center.sub(&self.p1).dot(&dir);
+        let oc = &self.p1.sub(&sphere.center);
 
-        if dist > sphere.radius {
-            // The line is outside the sphere
+        let a = v1.dot(&v1);
+        let b = 2.0 * oc.dot(&v1);
+        let c = oc.dot(&oc) - sphere.radius * sphere.radius;
+
+        let discriminant = b * b - 4.0 * a * c;
+
+        if discriminant < 0.0 {
+            // No real roots, no intersection
             return None;
         }
 
-        let t = f64::sqrt(sphere.radius * sphere.radius - dist * dist);
-        let p = self.p1.add(&dir.mul(t));
-        let q = self.p1.add(&dir.mul(-t));
+        let t1 = (-b - f64::sqrt(discriminant)) / (2.0 * a);
+        let t2 = (-b + f64::sqrt(discriminant)) / (2.0 * a);
 
-        if p == q {
-            // The line is tangent to the sphere
-            return Some(p);
-        } else {
-            // Two intersection points
-            return Some(p);
+        if t1 >= 0.0 && t1 <= 1.0 {
+            return Some(self.p1.add(&v1.mul(t1)));
         }
+
+        if t2 >= 0.0 && t2 <= 1.0 {
+            return Some(self.p1.add(&v1.mul(t2)));
+        }
+
+        // Both intersections are outside the line segment
+        None
     }
+
+
 
     pub fn display_line(&self) -> String {
         let v1 = &self.p2.sub(&self.p1);
