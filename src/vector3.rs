@@ -1,6 +1,6 @@
 use std::fmt;
 use std::ops::*;
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vector3 {
     pub x: f64,
     pub y: f64,
@@ -65,12 +65,8 @@ impl Vector3 {
         self.mag(&(1.0 / scalar))
     }
 
-    pub fn dot(&self, other: &Vector3) -> Vector3 {
-        Vector3 {
-            x: self.x * other.x,
-            y: self.y * other.y,
-            z: self.z * other.z,
-        }
+    pub fn dot(&self, other: &Vector3) -> f64 {
+        self.x * other.x + self.y * other.y + self.z * other.z
     }
 
     pub fn dot_product(&self, other: &Vector3) -> f64 {
@@ -84,11 +80,12 @@ impl Vector3 {
 
     pub fn cross(&self, other: &Vector3) -> Vector3 {
         Vector3 {
-            x: (self.y * other.z) - (self.z * other.y),
-            y: (self.z * other.x) - (self.x * other.z),
-            z: (self.x * other.y) - (self.y * other.x),
+            x: self.y * other.z - self.z * other.y,
+            y: self.z * other.x - self.x * other.z,
+            z: self.x * other.y - self.y * other.x,
         }
     }
+
 }
 
 impl fmt::Display for Vector3 {
