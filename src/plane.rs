@@ -1,4 +1,4 @@
-use crate::line3D::Line3D;
+use crate::line3d::Line3D;
 use crate::vector3::Vector3;
 #[derive(Debug, Clone, Copy)]
 pub struct Plane {
