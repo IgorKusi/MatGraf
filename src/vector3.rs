@@ -34,7 +34,7 @@ impl Vector3 {
 
     pub fn normalise(&self) -> Option<Vector3> {
         let len = self.length();
-        return if len != 0.0 {
+        if len != 0.0 {
             Some(Vector3 {
                 x: self.x / len,
                 y: self.y / len,
@@ -42,7 +42,7 @@ impl Vector3 {
             })
         } else {
             None
-        };
+        }
     }
 
     pub fn sub(&self, other: &Vector3) -> Vector3 {
