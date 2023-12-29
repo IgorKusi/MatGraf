@@ -8,14 +8,11 @@ pub struct Camera {
 
 impl Camera {
     pub fn cast_ray(&self, x: f64, y: f64) -> Vector3 {
-        // Prosty model kamery - promienie są równoległe do osi z
         let ray_direction = self.direction.normalise().unwrap_or(Vector3::new(0.0, 0.0, 1.0));
         let ray_origin = self.origin;
         ray_origin.add(&ray_direction.mag(&x).add(&Vector3::new(0.0, y, 0.0)))
     }
 }
-
-// Funkcja generująca wizualizację sceny z sześcianem na tablicy znaków
 pub fn generate_scene(cube: &Cube, camera: &Camera) -> Vec<Vec<char>> {
     let mut scene = vec![vec!['.'; 60]; 60];
 
@@ -27,8 +24,6 @@ pub fn generate_scene(cube: &Cube, camera: &Camera) -> Vec<Vec<char>> {
                 .normalise() {
                 normalized_direction
             } else {
-                // Handle the case where normalization failed (e.g., zero-length vector)
-                // You can choose an alternative direction or handle it according to your needs
                 Vector3::new(0.0, 0.0, 1.0)
             };
             if cube.intersects(&ray_origin, &ray_direction) {

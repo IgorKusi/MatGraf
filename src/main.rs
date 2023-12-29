@@ -22,9 +22,8 @@ use crate::camera::Camera;
 
 
 fn main() {
-    // Przykładowe użycie
     let cube = cube::new(Vector3::new(0.0, 0.0, 0.0), 5.0);
-    let camera = camera::new(Vector3::new(0.0, 0.0, -20.0), Vector3::new(0.0, 0.0, 0.0));
+    let camera = camera::new(Vector3::new(1.0, -10.0, -20.0), Vector3::new(0.0, 0.0, 0.0));
 
     loop {
         let scene = generate_scene(&cube, &camera);
@@ -36,8 +35,9 @@ fn main() {
             }
             println!();
         }
+
         //czekaj 10ms
-        std::thread::sleep(std::time::Duration::from_millis(10));
+        std::thread::sleep(std::time::Duration::from_millis(1000));
 
         //czysc konsole
         print!("{}[2J", 27 as char);
