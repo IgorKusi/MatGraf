@@ -4,8 +4,8 @@ use crate::vector3::Vector3;
 pub struct Camera {
     pub origin: Vector3,
     pub direction: Vector3,
-    pub yaw: f64,          // Kąt obrotu wokół osi Y
-    pub rotation_speed: f64 // Prędkość obrotu kamery
+    pub yaw: f64,
+    pub rotation_speed: f64
 }
 
 impl Camera {
@@ -14,13 +14,12 @@ impl Camera {
         let delta_yaw = self.rotation_speed;
 
         match direction {
-            'A' => self.yaw -= delta_yaw, // Obrót w lewo
-            'D' => self.yaw += delta_yaw, // Obrót w prawo
-            _ => {} // Inne klawisze ignorujemy
+            'A' => self.yaw -= delta_yaw,
+            'D' => self.yaw += delta_yaw,
+            _ => {}
         }
     }
     pub fn update_direction(&mut self) {
-        // Oblicz wektor kierunku kamery na podstawie kąta obrotu yaw
         let direction_x = self.yaw.sin();
         let direction_z = self.yaw.cos();
 
@@ -28,13 +27,13 @@ impl Camera {
     }
 
     pub fn cast_ray(&mut self, x: f64, y: f64) -> Vector3 {
-        self.update_direction(); // Aktualizacja wektora kierunku przed rzutem promienia
+        self.update_direction();
 
         let ray_direction = self.direction.normalise().unwrap_or(Vector3::new(0.0, 0.0, 1.0));
         let ray_origin = self.origin;
 
-        let fov = 90.0; // Zakładam kąt widzenia kamery jako 90 stopni, ale możesz dostosować to do swoich potrzeb
-        let aspect_ratio = 1.0; // Zakładam kwadratowy ekran, dostosuj, jeśli to nieprawda
+        let fov = 90.0;
+        let aspect_ratio = 1.0;
         let tan_fov = f64::tan((fov / 2.0f64).to_radians());
 
         let sensor_x = ((x + 0.5) / 60.0) * 2.0 - 1.0;
@@ -74,7 +73,7 @@ pub fn new(p0: Vector3, p1: Vector3) -> Camera {
     Camera {
         origin: p0,
         direction: p1,
-        rotation_speed: 0.1, // Domyślna prędkość obrotu kamery
-        yaw: 0.0,            // Domyślny kąt obrotu wokół osi Y
+        rotation_speed: 0.1,
+        yaw: 0.0,
     }
 }

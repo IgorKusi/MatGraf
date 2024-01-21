@@ -24,7 +24,7 @@ fn main() {
     // Ustawienie standardowego wejścia w tryb nieblokujący
     terminal::enable_raw_mode().expect("Failed to enable raw mode");
 
-    let cube = cube::new(Vector3::new(5.0, 5sssss.0, 0.0), 10.0);
+    let cube = cube::new(Vector3::new(5.0, 5.0, 0.0), 10.0);
     let mut camera = camera::new(Vector3::new(1.0, -10.0, -20.0), Vector3::new(0.0, 0.0, 0.0));
 
     loop {
