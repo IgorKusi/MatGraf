@@ -20,6 +20,30 @@ impl Vector3 {
         }
     }
 
+    pub fn rotate_around(&self, axis: Vector3, angle: f64) -> Vector3 {
+        let cos_a = angle.cos();
+        let sin_a = angle.sin();
+        let one_minus_cos_a = 1.0 - cos_a;
+
+        let x = self.x;
+        let y = self.y;
+        let z = self.z;
+
+        let axis_squared = Vector3::new(axis.x * axis.x, axis.y * axis.y, axis.z * axis.z);
+
+        let mut result = Vector3::new(
+            axis_squared.x * (one_minus_cos_a) + cos_a,
+            axis.x * axis.y * (one_minus_cos_a) - axis.z * sin_a,
+            axis.x * axis.z * (one_minus_cos_a) + axis.y * sin_a,
+        );
+
+        result.x *= x;
+        result.y *= y;
+        result.z *= z;
+
+        result
+    }
+
     pub fn length(&self) -> f64 {
         f64::sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
     }

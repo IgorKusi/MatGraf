@@ -9,24 +9,26 @@ mod sphere;
 mod cube;
 mod camera;
 
+use crossterm::{
+    event::{self, KeyCode, KeyEvent},
+    terminal,
+};
+use std::time::Duration;
 
-use std::fs::File;
-use std::io::{self, Write};
 use crate::camera::generate_scene;
-use crate::plane::Plane;
-use crate::vector3::Vector3;
-use crate::line3d::Line3D;
-use crate::sphere::Sphere;
 use crate::cube::Cube;
+use crate::vector3::Vector3;
 use crate::camera::Camera;
 
-
 fn main() {
-    let cube = cube::new(Vector3::new(0.0, 0.0, 0.0), 5.0);
-    let camera = camera::new(Vector3::new(1.0, -10.0, -20.0), Vector3::new(0.0, 0.0, 0.0));
+    // Ustawienie standardowego wejścia w tryb nieblokujący
+    terminal::enable_raw_mode().expect("Failed to enable raw mode");
+
+    let cube = cube::new(Vector3::new(5.0, 5sssss.0, 0.0), 10.0);
+    let mut camera = camera::new(Vector3::new(1.0, -10.0, -20.0), Vector3::new(0.0, 0.0, 0.0));
 
     loop {
-        let scene = generate_scene(&cube, &camera);
+        let scene = generate_scene(&cube, &mut camera);
 
         // Wypisz wynik
         for row in scene {
@@ -36,13 +38,46 @@ fn main() {
             println!();
         }
 
-        //czekaj 10ms
-        std::thread::sleep(std::time::Duration::from_millis(1000));
+        // Wczytywanie pojedynczych klawiszy
+        if let event::Event::Key(KeyEvent {
+                                     code,
+                                     state,
+                                     modifiers,
+                                     kind,
+                                 }) = event::read().expect("Failed to read event")
+        {
 
-        //czysc konsole
+            match code {
+                KeyCode::Char('w') => {
+                    // Przesunięcie kamery do przodu
+                    camera.origin = camera.origin.add(&camera.direction.normalise().unwrap().mag(&0.1));
+                }
+                KeyCode::Char('s') => {
+                    // Przesunięcie kamery do tyłu
+                    camera.origin = camera.origin.sub(&camera.direction.normalise().unwrap().mag(&0.1));
+                }
+                KeyCode::Char('a') => {
+                    // Obroty kamery w lewo
+                    camera.yaw += camera.rotation_speed;
+                }
+                KeyCode::Char('d') => {
+                    // Obroty kamery w prawo
+                    camera.yaw -= camera.rotation_speed;
+                }
+                _ => {}
+            }
+        }
+
+        // Czekaj 10ms
+        std::thread::sleep(Duration::from_millis(10));
+
+        // Czyść konsolę
         print!("{}[2J", 27 as char);
     }
 
+    // Przywrócenie standardowego trybu wejścia
+    terminal::disable_raw_mode().expect("Failed to disable raw mode");
+}
 
 
 
@@ -64,9 +99,7 @@ fn main() {
 
 
 
-
-
-    // //linia 1 przechodząca przez punkt (1,6,5) i (4,7,10)
+// //linia 1 przechodząca przez punkt (1,6,5) i (4,7,10)
     // let l1 = line3d::Line3D::new_p((1.0, 6.0, 5.0), (4.0, 7.0, 10.0));
     // //wyswietl linie
     // println!("Linia 1: {:?}", l1.display_line());
@@ -79,8 +112,8 @@ fn main() {
     // //wyswietl czy linie sie przecinaja
     // println!("Czy linie sie przecinaja: {:?}", l1.do_lines_intersect(&l2));
     //
-    // //wyswietl punk przecięcia linii
-    // println!("Punkt przecięcia linii: {:?}", l1.calculate_point_of_intersection(&l2).unwrap());
+    // // //wyswietl punk przecięcia linii
+    // // println!("Punkt przecięcia linii: {:?}", l1.calculate_point_of_intersection(&l2).unwrap());
     //
     // //wyswietl kat pomiedzy liniami
     // println!("Kat pomiedzy liniami: {:?}", l1.calculate_angle_between_lines(&l2));
@@ -165,5 +198,4 @@ fn main() {
     // //wyswietl punkt przeciecia linii i sfery
     // println!("Punkt przeciecia linii i sfery: {:?}", l6.calculate_point_of_intersection_with_sphere(&s1).unwrap());
 
-
-}
+//}
