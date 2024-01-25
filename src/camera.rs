@@ -33,7 +33,7 @@ impl Camera {
         let ray_origin = self.origin;
 
         let fov = 90.0;
-        let aspect_ratio = 1.0;
+        let aspect_ratio = 1.0/2.75;
         let tan_fov = f64::tan((fov / 2.0f64).to_radians());
 
         let sensor_x = ((x + 0.5) / 60.0) * 2.0 - 1.0;
@@ -48,20 +48,24 @@ impl Camera {
     }
 }
 pub fn generate_scene(cube: &Cube, camera: &mut Camera) -> Vec<Vec<char>> {
-    let mut scene = vec![vec!['.'; 60]; 60];
+    let mut scene = vec![vec!['.'; 180]; 40];
 
-    for i in 0..60 {
-        for j in 0..60 {
-            let ray_origin = camera.origin.clone();
-            let ray_direction = if let Some(normalized_direction) = camera.cast_ray(i as f64, j as f64)
+    for y in 0..40 {
+        for x in 0..180 {
+            let ray_origin = camera.origin.clone();// + Vector3::new( 20.0, 90.0, 0.0 );
+            let ray_direction = camera.cast_ray(x as f64 - 45.0, y as f64 + 10.0)   //centers the origin, somehow (is 1/4 of w,h)
                 .sub(&ray_origin)
-                .normalise() {
-                normalized_direction
-            } else {
-                Vector3::new(0.0, 0.0, 1.0)
-            };
+                .normalise()
+                .unwrap_or(Vector3::new(0.0, 0.0, 1.0));
+            // let ray_direction = if let Some(normalized_direction) = camera.cast_ray(i as f64, j as f64)
+            //     .sub(&ray_origin)
+            //     .normalise() {
+            //     normalized_direction
+            // } else {
+            //     Vector3::new(0.0, 0.0, 1.0)
+            // };
             if cube.intersects(&ray_origin, &ray_direction) {
-                scene[i][j] = '0';
+                scene[y][x] = '0';
             }
         }
     }
@@ -73,7 +77,7 @@ pub fn new(p0: Vector3, p1: Vector3) -> Camera {
     Camera {
         origin: p0,
         direction: p1,
-        rotation_speed: 0.1,
+        rotation_speed: 0.01,
         yaw: 0.0,
     }
 }

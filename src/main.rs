@@ -24,9 +24,10 @@ fn main() {
     // Ustawienie standardowego wejścia w tryb nieblokujący
     terminal::enable_raw_mode().expect("Failed to enable raw mode");
 
-    let cube = cube::new(Vector3::new(5.0, 5.0, 0.0), 10.0);
-    let mut camera = camera::new(Vector3::new(1.0, -10.0, -20.0), Vector3::new(0.0, 0.0, 0.0));
+    let cube = cube::new(Vector3::new(0.0, 0.0, 0.0), 10.0);
+    let mut camera = camera::new(Vector3::new(0.0, 0.0, -20.0), Vector3::new(0.0, 0.0, 0.0));
 
+    'main:
     loop {
         let scene = generate_scene(&cube, &mut camera);
 
@@ -48,21 +49,32 @@ fn main() {
         {
 
             match code {
+                KeyCode::Char('8') => {
+                    camera.origin += Vector3::new(0.0, 1.0, 0.0);
+                }
+                KeyCode::Char('2') => {
+                    camera.origin += Vector3::new(0.0, -1.0, 0.0);
+                }
                 KeyCode::Char('w') => {
-                    // Przesunięcie kamery do przodu
-                    camera.origin = camera.origin.add(&camera.direction.normalise().unwrap().mag(&0.1));
+                    camera.origin += Vector3::new(0.0, 0.0, 1.0);
                 }
                 KeyCode::Char('s') => {
-                    // Przesunięcie kamery do tyłu
-                    camera.origin = camera.origin.sub(&camera.direction.normalise().unwrap().mag(&0.1));
-                }
-                KeyCode::Char('a') => {
-                    // Obroty kamery w lewo
-                    camera.yaw += camera.rotation_speed;
+                    camera.origin += Vector3::new(0.0, 0.0, -1.0);
                 }
                 KeyCode::Char('d') => {
-                    // Obroty kamery w prawo
+                    camera.origin += Vector3::new(1.0, 0.0, 0.0);
+                }
+                KeyCode::Char('a') => {
+                    camera.origin += Vector3::new(-1.0, 0.0, 0.0);
+                }
+                KeyCode::Char('q') => {
+                    camera.yaw += camera.rotation_speed;
+                }
+                KeyCode::Char('e') => {
                     camera.yaw -= camera.rotation_speed;
+                }
+                KeyCode::Backspace => {
+                    break 'main;
                 }
                 _ => {}
             }

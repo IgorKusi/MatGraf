@@ -189,3 +189,35 @@ impl Neg for Vector3 {
         }
     }
 }
+
+impl AddAssign for Vector3 {
+    fn add_assign(&mut self, rhs: Vector3) {
+        self.x = self.x + rhs.x;
+        self.y = self.y + rhs.y;
+        self.z = self.z + rhs.z;
+    }
+}
+
+impl SubAssign for Vector3 {
+    fn sub_assign(&mut self, rhs: Vector3) {
+        self.x = self.x - rhs.x;
+        self.y = self.y - rhs.y;
+        self.z = self.z - rhs.z;
+    }
+}
+
+impl MulAssign<f64> for Vector3 {
+    fn mul_assign(&mut self, rhs: f64) {
+        self.x = self.x * rhs;
+        self.y = self.y * rhs;
+        self.z = self.z * rhs;
+    }
+}
+
+impl DivAssign<f64> for Vector3 {
+    fn div_assign(&mut self, rhs: f64) {
+        self.x = self.x / rhs;
+        self.y = self.y / rhs;
+        self.z = self.z / rhs;
+    }
+}
